@@ -1,0 +1,19 @@
+{
+	"name": "EMPB",
+	"properties": {
+		"activities": [
+			{
+				"name": "Wait1",
+				"type": "Wait",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 1
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2023-09-01T05:20:09Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

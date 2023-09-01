@@ -1,0 +1,93 @@
+{
+	"name": "Aggregate",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Emp_Sal",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "output_folder_csv",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "output_folder_csv",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				},
+				{
+					"dataset": {
+						"referenceName": "output_folder_csv",
+						"type": "DatasetReference"
+					},
+					"name": "sink3"
+				}
+			],
+			"transformations": [
+				{
+					"name": "aggregate1"
+				},
+				{
+					"name": "aggregate2"
+				},
+				{
+					"name": "GroupbyCounty"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          emp_id as string,",
+				"          Name as string,",
+				"          Salary as integer,",
+				"          department_name as string,",
+				"          country_id as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source1 aggregate(groupBy(country_id,",
+				"          department_name),",
+				"     Sum_Salary = sum(Salary),",
+				"          Min_Salary = min(Salary),",
+				"          Max_Salary = max(Salary)) ~> aggregate1",
+				"source1 aggregate(groupBy(department_name),",
+				"     Sum_Salary = sum(Salary)) ~> aggregate2",
+				"source1 aggregate(groupBy(country_id),",
+				"     Sum_Salary = sum(Salary),",
+				"          Avg_Salary = avg(Salary),",
+				"          Min_Salary = min(Salary),",
+				"          Max_Salary = max(Salary)) ~> GroupbyCounty",
+				"GroupbyCounty sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['groupbycountry.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sink1",
+				"aggregate2 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['groupbydept.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sink2",
+				"aggregate1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['groupbycountry_dept.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sink3"
+			]
+		}
+	}
+}

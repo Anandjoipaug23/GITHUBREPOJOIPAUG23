@@ -1,0 +1,80 @@
+{
+	"name": "filter",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Emp_Sal",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "output_folder_csv",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "output_folder_csv",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				},
+				{
+					"dataset": {
+						"referenceName": "output_folder_csv",
+						"type": "DatasetReference"
+					},
+					"name": "sink3"
+				}
+			],
+			"transformations": [
+				{
+					"name": "filter5000"
+				},
+				{
+					"name": "filter2"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          emp_id as string,",
+				"          Name as string,",
+				"          Salary as integer,",
+				"          department_name as string,",
+				"          country_id as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source1 filter(Salary == 7000) ~> filter5000",
+				"source1 filter(Salary > 5000 && department_name == 'Executive') ~> filter2",
+				"filter5000 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['filter5000.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sink1",
+				"filter2 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['filterdeptandsal.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sink2",
+				"filter5000 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['newfilter.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sink3"
+			]
+		}
+	}
+}

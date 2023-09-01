@@ -1,0 +1,90 @@
+{
+	"name": "Table",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "Dynamic_DBname_Table_Input",
+						"type": "DatasetReference",
+						"parameters": {
+							"table_db_name": {
+								"value": "@pipeline().parameters.SourceDBName",
+								"type": "Expression"
+							},
+							"Table_Name": {
+								"value": "@pipeline().parameters.SourceTableName",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Dynamic_DBname_Table_Input",
+						"type": "DatasetReference",
+						"parameters": {
+							"table_db_name": {
+								"value": "@pipeline().parameters.DestDBName",
+								"type": "Expression"
+							},
+							"Table_Name": {
+								"value": "@pipeline().parameters.DestTableName",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			}
+		],
+		"parameters": {
+			"SourceDBName": {
+				"type": "string"
+			},
+			"SourceTableName": {
+				"type": "string"
+			},
+			"DestDBName": {
+				"type": "string"
+			},
+			"DestTableName": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-08-10T06:58:37Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

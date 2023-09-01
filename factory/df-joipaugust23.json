@@ -1,0 +1,9 @@
+{
+	"name": "df-joipaugust23",
+	"location": "centralindia",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "a5c9f0b4-734b-459d-8f10-7f2c4ad016cb",
+		"tenantId": "a50f3126-6ac7-417c-bb06-40f20b73949d"
+	}
+}

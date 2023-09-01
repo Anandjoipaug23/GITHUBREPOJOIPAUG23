@@ -1,0 +1,63 @@
+{
+	"name": "Delete_files prior to today_copy1",
+	"properties": {
+		"activities": [
+			{
+				"name": "Delete1",
+				"type": "Delete",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "Delete_Input_folder",
+						"type": "DatasetReference"
+					},
+					"enableLogging": false,
+					"storeSettings": {
+						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
+						"modifiedDatetimeStart": null,
+						"modifiedDatetimeEnd": {
+							"value": "@startOfDay(utcnow())",
+							"type": "Expression"
+						},
+						"wildcardFileName": "*.csv",
+						"enablePartitionDiscovery": false
+					}
+				}
+			},
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Month",
+					"value": {
+						"value": "@if(equals(substring(string(utcnow()),5 ,2),'08'),addDays(utcnow(),-31 ),addDays(utcnow(),-30 ))",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"variables": {
+			"Month": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-08-10T06:58:37Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
